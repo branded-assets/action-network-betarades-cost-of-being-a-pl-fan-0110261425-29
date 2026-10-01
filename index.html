@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cost of being a fan | Betarades Fan Expense Index</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --azure:#007FFF;
+    --azure-dim:#0A6BD6;
+    --biscay:#1B3162;
+    --biscay-deep:#122346;
+    --white:#FFFFFF;
+    --ink:#0E1E3A;
+    --muted:#5E72A0;
+    --muted2:#6B7FA3;
+    --hair:#E3EBF7;
+    --panel:#F4F8FE;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--biscay-deep);
+    font-family:'Inter',sans-serif;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+    padding:28px 14px 60px;
+  }
+  .wrap{
+    max-width:880px;
+    margin:0 auto;
+    background:var(--white);
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 30px 70px rgba(4,12,30,0.45);
+  }
+
+  /* ---------- Header ---------- */
+  header{
+    background:linear-gradient(135deg, var(--biscay) 0%, var(--biscay-deep) 100%);
+    color:var(--white);
+    padding:30px 32px 26px;
+    position:relative;
+    overflow:hidden;
+  }
+  header::after{
+    content:"";
+    position:absolute;
+    top:-60px; right:-60px;
+    width:260px; height:260px;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(0,127,255,0.35), transparent 70%);
+  }
+  .brand{
+    display:flex; align-items:center; gap:10px;
+    font-family:'Oswald',sans-serif;
+    font-size:14px;
+    letter-spacing:.04em;
+    color:var(--azure);
+    text-transform:uppercase;
+    font-weight:600;
+    position:relative; z-index:1;
+  }
+  .brand .dot{width:8px;height:8px;border-radius:50%;background:var(--azure);}
+  h1{
+    font-family:'Oswald',sans-serif;
+    font-weight:600;
+    font-size:30px;
+    line-height:1.15;
+    margin:14px 0 8px;
+    position:relative; z-index:1;
+    max-width:520px;
+  }
+  header p{
+    margin:0;
+    color:#C8D6EE;
+    font-size:14.5px;
+    line-height:1.55;
+    max-width:520px;
+    position:relative; z-index:1;
+  }
+
+  /* ---------- Controls ---------- */
+  .controls{
+    display:flex;
+    gap:8px;
+    padding:18px 32px;
+    overflow-x:auto;
+    background:var(--panel);
+    border-bottom:1px solid var(--hair);
+    scrollbar-width:none;
+  }
+  .controls::-webkit-scrollbar{display:none;}
+  .pill{
+    flex:0 0 auto;
+    border:1px solid var(--hair);
+    background:var(--white);
+    color:var(--muted2);
+    font-family:'Inter',sans-serif;
+    font-size:13px;
+    font-weight:600;
+    padding:9px 16px;
+    border-radius:999px;
+    cursor:pointer;
+    white-space:nowrap;
+    transition:background .18s ease, color .18s ease, border-color .18s ease, transform .18s ease;
+  }
+  .pill:hover{transform:translateY(-1px);}
+  .pill.active{
+    background:var(--azure);
+    border-color:var(--azure);
+    color:var(--white);
+  }
+
+  /* ---------- List ---------- */
+  .legend{
+    display:flex;
+    justify-content:space-between;
+    padding:16px 32px 4px;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    color:var(--muted2);
+    font-weight:600;
+  }
+  .list{
+    padding:6px 20px 28px;
+    position:relative;
+  }
+  .row{
+    position:relative;
+    display:grid;
+    grid-template-columns:28px 38px 1fr auto;
+    align-items:center;
+    gap:14px;
+    padding:11px 12px;
+    border-radius:12px;
+    cursor:pointer;
+    transition:background .15s ease;
+  }
+  .row:hover{background:var(--panel);}
+  .rank{
+    font-family:'Oswald',sans-serif;
+    font-weight:500;
+    font-size:14px;
+    color:var(--muted2);
+    text-align:center;
+  }
+  .accent{
+    width:4px;
+    position:absolute;
+    left:0; top:10px; bottom:10px;
+    border-radius:3px;
+    opacity:.85;
+  }
+  .crest-wrap{
+    width:38px;height:38px;border-radius:50%;
+    background:var(--panel);
+    border:1px solid var(--hair);
+    display:flex;align-items:center;justify-content:center;
+    overflow:hidden;
+    flex:0 0 auto;
+  }
+  .crest-wrap img{width:26px;height:26px;object-fit:contain;}
+  .crest-fallback{
+    width:100%;height:100%;
+    display:none;
+    align-items:center;justify-content:center;
+    background:var(--azure);
+    color:var(--white);
+    font-family:'Oswald',sans-serif;
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:.02em;
+  }
+  .mid{min-width:0;}
+  .name{
+    font-size:14.5px;
+    font-weight:600;
+    color:var(--ink);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .barrow{
+    margin-top:6px;
+    height:7px;
+    border-radius:5px;
+    background:var(--hair);
+    overflow:hidden;
+  }
+  .barfill{
+    height:100%;
+    border-radius:5px;
+    background:linear-gradient(90deg, var(--azure-dim), var(--azure));
+    width:0%;
+    transition:width .55s cubic-bezier(.4,0,.2,1);
+  }
+  .value{
+    font-family:'Oswald',sans-serif;
+    font-weight:600;
+    font-size:15.5px;
+    color:var(--biscay);
+    text-align:right;
+    min-width:72px;
+  }
+  .value small{
+    display:block;
+    font-family:'Inter',sans-serif;
+    font-weight:500;
+    font-size:9.5px;
+    color:var(--muted2);
+    text-transform:uppercase;
+    letter-spacing:.04em;
+  }
+
+  /* ---------- Detail panel ---------- */
+  .detail{
+    grid-column:1 / -1;
+    max-height:0;
+    overflow:hidden;
+    transition:max-height .32s ease, opacity .25s ease, margin .32s ease;
+    opacity:0;
+  }
+  .row.open .detail{
+    max-height:140px;
+    opacity:1;
+    margin-top:10px;
+  }
+  .detail-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+    background:var(--panel);
+    border:1px solid var(--hair);
+    border-radius:10px;
+    padding:12px 14px;
+  }
+  .detail-item{display:flex;flex-direction:column;gap:2px;}
+  .detail-item span{font-size:10px;color:var(--muted2);text-transform:uppercase;letter-spacing:.04em;font-weight:600;}
+  .detail-item b{font-family:'Oswald',sans-serif;font-size:14px;color:var(--ink);font-weight:500;}
+
+  footer{
+    padding:16px 32px 26px;
+    font-size:11.5px;
+    color:var(--muted2);
+    border-top:1px solid var(--hair);
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:6px;
+  }
+
+  @media (max-width:560px){
+    .legend{display:none;}
+    h1{font-size:24px;}
+    .value{min-width:60px; font-size:13.5px;}
+    .detail-grid{grid-template-columns:repeat(2,1fr);}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="brand"><span class="dot"></span>Betarades · Fan Expense Index</div>
+    <h1>What it really costs to follow your club this season</h1>
+    <p>Season tickets, away days, the shirt off your back, a pint and a pie, plus live football coverage &mdash; ranked across 20 clubs. Tap any club to see the full breakdown.</p>
+  </header>
+
+  <div class="controls" id="controls"></div>
+
+  <div class="legend">
+    <span>Club</span>
+    <span>Selected metric</span>
+  </div>
+
+  <div class="list" id="list"></div>
+
+  <footer>
+    <span>Source: Betarades Fan Expense Index, 2026&ndash;27 season</span>
+    <span>Tap a row for the full cost breakdown</span>
+  </footer>
+</div>
+
+<script>
+const clubs = [
+  {name:"Arsenal", st:1290, away:30, shirt:85, pint:7, pie:6.95, stream:731.88, cost:2657.78, index:100, color:"#EF0107", wiki:"Arsenal F.C.", initials:"AR"},
+  {name:"Tottenham Hotspur", st:856, away:30, shirt:89.99, pint:6.6, pie:6, stream:731.88, cost:2190.27, index:90.5, color:"#132257", wiki:"Tottenham Hotspur F.C.", initials:"TH"},
+  {name:"Chelsea", st:700, away:30, shirt:89.99, pint:7.99, pie:6.35, stream:731.88, cost:2103.13, index:88.7, color:"#034694", wiki:"Chelsea F.C.", initials:"CH"},
+  {name:"Aston Villa", st:703, away:30, shirt:85, pint:5.75, pie:6, stream:731.88, cost:1994.88, index:86.5, color:"#670E36", wiki:"Aston Villa F.C.", initials:"AV"},
+  {name:"Manchester United", st:646, away:30, shirt:84.99, pint:6.6, pie:5.5, stream:731.88, cost:1964.27, index:85.8, color:"#DA291C", wiki:"Manchester United F.C.", initials:"MU"},
+  {name:"Liverpool", st:734, away:30, shirt:84.99, pint:4.8, pie:4.5, stream:731.88, cost:1951.07, index:85.6, color:"#C8102E", wiki:"Liverpool F.C.", initials:"LI"},
+  {name:"Everton", st:640, away:30, shirt:85, pint:5.95, pie:6.2, stream:731.88, cost:1945.08, index:85.4, color:"#003399", wiki:"Everton F.C.", initials:"EV"},
+  {name:"Leeds United", st:632, away:30, shirt:75, pint:6.75, pie:5.25, stream:731.88, cost:1941.38, index:85.4, color:"#1D428A", wiki:"Leeds United F.C.", initials:"LU"},
+  {name:"Brighton & Hove Albion", st:630, away:30, shirt:85, pint:5.9, pie:6.1, stream:731.88, cost:1930.68, index:85.2, color:"#0057B8", wiki:"Brighton & Hove Albion F.C.", initials:"BH"},
+  {name:"Coventry City", st:625, away:30, shirt:90, pint:5.8, pie:4.95, stream:731.88, cost:1900.98, index:84.5, color:"#78D0F7", wiki:"Coventry City F.C.", initials:"CC"},
+  {name:"Crystal Palace", st:600, away:30, shirt:65, pint:6, pie:6.5, stream:731.88, cost:1893.88, index:84.4, color:"#1B458F", wiki:"Crystal Palace F.C.", initials:"CP"},
+  {name:"Nottingham Forest", st:575, away:30, shirt:75, pint:6.1, pie:5.3, stream:731.88, cost:1856.88, index:83.6, color:"#DD0000", wiki:"Nottingham Forest F.C.", initials:"NF"},
+  {name:"Fulham", st:470, away:30, shirt:84.99, pint:7.5, pie:6, stream:731.88, cost:1838.87, index:83.3, color:"#000000", wiki:"Fulham F.C.", initials:"FU"},
+  {name:"Sunderland", st:590, away:30, shirt:65, pint:4.95, pie:5.2, stream:731.88, cost:1809.08, index:82.7, color:"#EB172F", wiki:"Sunderland A.F.C.", initials:"SU"},
+  {name:"Manchester City", st:490, away:30, shirt:85, pint:6.35, pie:5.25, stream:731.88, cost:1791.78, index:82.3, color:"#6CABDD", wiki:"Manchester City F.C.", initials:"MC"},
+  {name:"Bournemouth", st:436, away:30, shirt:70, pint:7, pie:6.25, stream:731.88, cost:1773.38, index:81.9, color:"#B50E12", wiki:"AFC Bournemouth", initials:"BO"},
+  {name:"Brentford", st:485, away:30, shirt:65, pint:6, pie:5.95, stream:731.88, cost:1766.78, index:81.8, color:"#D2122E", wiki:"Brentford F.C.", initials:"BR"},
+  {name:"Ipswich Town", st:469, away:30, shirt:65, pint:5.8, pie:6.75, stream:731.88, cost:1759.58, index:81.7, color:"#0044A9", wiki:"Ipswich Town F.C.", initials:"IT"},
+  {name:"Hull City", st:396, away:30, shirt:64, pint:6.3, pie:5.75, stream:731.88, cost:1685.58, index:80.1, color:"#F18A00", wiki:"Hull City A.F.C.", initials:"HC"},
+  {name:"Newcastle United", st:380, away:30, shirt:85, pint:5.85, pie:6.1, stream:731.88, cost:1678.48, index:80, color:"#000000", wiki:"Newcastle United F.C.", initials:"NU"}
+];
+
+// Resolve each club's current crest live from Wikipedia's page-image API
+// (keyed by article title, not a guessed filename) so badges stay accurate
+// and up to date rather than depending on a hardcoded file path.
+const crestCache = {};
+async function resolveCrest(title){
+  if(crestCache[title]) return crestCache[title];
+  const url = `https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(title)}&prop=pageimages&piprop=thumbnail&pithumbsize=160&format=json&origin=*`;
+  try{
+    const res = await fetch(url);
+    const data = await res.json();
+    const pages = data.query && data.query.pages;
+    const page = pages && Object.values(pages)[0];
+    const src = page && page.thumbnail && page.thumbnail.source;
+    crestCache[title] = src || null;
+    return crestCache[title];
+  }catch(e){
+    crestCache[title] = null;
+    return null;
+  }
+}
+
+const metrics = [
+  {key:"index", label:"Expense index", unit:"", fmt:v=>v.toFixed(1)},
+  {key:"cost", label:"Est. annual cost", unit:"£", fmt:v=>"£"+Math.round(v).toLocaleString()},
+  {key:"st", label:"Cheapest season ticket", unit:"£", fmt:v=>"£"+Math.round(v).toLocaleString()},
+  {key:"away", label:"Away ticket", unit:"£", fmt:v=>"£"+v.toFixed(0)},
+  {key:"shirt", label:"Shirt price", unit:"£", fmt:v=>"£"+v.toFixed(2)},
+  {key:"pint", label:"Pint", unit:"£", fmt:v=>"£"+v.toFixed(2)},
+  {key:"pie", label:"Pie", unit:"£", fmt:v=>"£"+v.toFixed(2)},
+  {key:"stream", label:"Live football coverage (annual)", unit:"£", fmt:v=>"£"+v.toFixed(2)}
+];
+
+let currentMetric = "index";
+
+const controlsEl = document.getElementById('controls');
+const listEl = document.getElementById('list');
+
+function buildControls(){
+  controlsEl.innerHTML = metrics.map(m =>
+    `<button class="pill${m.key===currentMetric?' active':''}" data-key="${m.key}">${m.label}</button>`
+  ).join('');
+  controlsEl.querySelectorAll('.pill').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      currentMetric = btn.dataset.key;
+      buildControls();
+      renderList(true);
+    });
+  });
+}
+
+function detailGrid(c){
+  return `<div class="detail-grid">
+    <div class="detail-item"><span>Season ticket</span><b>£${c.st.toLocaleString()}</b></div>
+    <div class="detail-item"><span>Away ticket</span><b>£${c.away}</b></div>
+    <div class="detail-item"><span>Shirt</span><b>£${c.shirt.toFixed(2)}</b></div>
+    <div class="detail-item"><span>Pint</span><b>£${c.pint.toFixed(2)}</b></div>
+    <div class="detail-item"><span>Pie</span><b>£${c.pie.toFixed(2)}</b></div>
+    <div class="detail-item"><span>Live coverage / yr</span><b>£${c.stream.toFixed(2)}</b></div>
+  </div>`;
+}
+
+function renderList(){
+  const m = metrics.find(x=>x.key===currentMetric);
+  const sorted = [...clubs].sort((a,b)=>b[m.key]-a[m.key]);
+  const max = sorted[0][m.key];
+
+  listEl.innerHTML = sorted.map((c, i)=>{
+    const pct = Math.max(4, (c[m.key]/max*100));
+    return `
+    <div class="row" data-name="${c.name}">
+      <span class="accent" style="background:${c.color}"></span>
+      <span class="rank">${i+1}</span>
+      <div class="crest-wrap" data-wiki="${c.wiki}">
+        <img alt="${c.name}" style="display:none"
+             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="crest-fallback" style="display:flex">${c.initials}</div>
+      </div>
+      <div class="mid">
+        <div class="name">${c.name}</div>
+        <div class="barrow"><div class="barfill" style="width:0%" data-pct="${pct}"></div></div>
+      </div>
+      <div class="value">${m.fmt(c[m.key])}<small>${m.label}</small></div>
+      <div class="detail">${detailGrid(c)}</div>
+    </div>`;
+  }).join('');
+
+  // animate bars in
+  requestAnimationFrame(()=>{
+    listEl.querySelectorAll('.barfill').forEach(el=>{
+      el.style.width = el.dataset.pct + '%';
+    });
+  });
+
+  // resolve crests live (non-blocking, cached per title)
+  listEl.querySelectorAll('.crest-wrap').forEach(wrap=>{
+    const title = wrap.dataset.wiki;
+    resolveCrest(title).then(src=>{
+      if(!src) return;
+      const img = wrap.querySelector('img');
+      const fallback = wrap.querySelector('.crest-fallback');
+      img.src = src;
+      img.onload = ()=>{ img.style.display='block'; fallback.style.display='none'; };
+    });
+  });
+
+  // row expand/collapse
+  listEl.querySelectorAll('.row').forEach(row=>{
+    row.addEventListener('click', ()=>{
+      const wasOpen = row.classList.contains('open');
+      listEl.querySelectorAll('.row.open').forEach(r=>r.classList.remove('open'));
+      if(!wasOpen) row.classList.add('open');
+    });
+  });
+}
+
+buildControls();
+renderList();
+</script>
+
+</body>
+</html>
